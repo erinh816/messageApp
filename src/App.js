@@ -6,7 +6,11 @@ import Message from "./Message";
 
 function App() {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState([
+    { username: "Lisa", text: "hey guys" },
+    { username: "Lily", text: "whats up" },
+    { username: "Lucy", text: "all good" },
+  ]);
   const [username, setUsername] = useState("");
 
   //test
@@ -22,7 +26,7 @@ function App() {
   const sendMessage = (event) => {
     event.preventDefault();
     //spread out whatever in the messages & append the input
-    setMessages([...messages, input]);
+    setMessages([...messages, { username: username, text: input }]);
     //set input to be blank afterwards
     setInput("");
   };
@@ -55,7 +59,7 @@ function App() {
       </form>
       {/* messages themselves */}
       {messages.map((message) => (
-        <Message text={message} />
+        <Message username={message.username} text={message.text} />
       ))}
     </div>
   );
