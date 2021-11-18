@@ -12,7 +12,7 @@ function Message({ message, username }) {
     <Card className={`message ${isUser && "message__user"}`}>
       <CardContent>
         <Typography color="black" variant="h5" coponent="h2">
-          {message.username}:{message.text}
+          {message.username}:{message.message}
         </Typography>
       </CardContent>
     </Card>

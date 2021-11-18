@@ -4,18 +4,33 @@ import "./App.css";
 import { Button, FormControl, InputLabel, Input } from "@mui/material";
 import Message from "./Message";
 
+import firebase from "firebase/compat/app";
+import "firebase/compat/auth";
+import "firebase/compat/firestore";
+import db from "./firebase.js";
+
 function App() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([
-    { username: "Lisa", text: "hey guys" },
-    { username: "Lily", text: "whats up" },
-    { username: "Lucy", text: "all good" },
+    { username: "Lisa", message: "hey guys" },
+    { username: "Lily", message: "whats up" },
   ]);
   const [username, setUsername] = useState("");
 
   //test
   console.log(input);
   console.log(messages);
+
+  useEffect(() => {
+    //run once when the app component loads
+    db.collection("messages")
+      .orderBy("timestamp", "desc")
+      .onSnapshot((snapshot) => {
+        //all of the documents are in the snapshot, snapshot.docs will give all of the documents under the collection
+        setMessages(snapshot.docs.map((doc) => doc.data()));
+      });
+    //any changes happen to collection will run and catch by snapshot
+  }, []);
 
   useEffect(() => {
     // const username = prompt("Please enter your name");
@@ -25,8 +40,18 @@ function App() {
   //all the logic to send a message goes
   const sendMessage = (event) => {
     event.preventDefault();
+
+    //connect firebase, we just need to push in an object
+    db.collection("messages").add({
+      message: input,
+      username: username,
+      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+    });
+
     //spread out whatever in the messages & append the input
-    setMessages([...messages, { username: username, text: input }]);
+    //******we will delete this later and merge it to firebase */
+    // setMessages([...messages, { username: username, message: input }]);
+    //*******************************/
     //set input to be blank afterwards
     setInput("");
   };
